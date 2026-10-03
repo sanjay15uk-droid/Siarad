@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Siarad">
+<meta name="theme-color" content="#1F6B45">
+<title>Siarad – Welsh practice</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐉</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700&family=Literata:opsz,wght@7..72,500;7..72,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF0EA;--surface:#FFFFFF;--ink:#1E2A2F;--muted:#5C6B70;
+  --green:#1F6B45;--green-soft:#DCEBE1;--red:#C8102E;--red-soft:#F8DDE1;
+  --gold:#E8B320;--line:#D3DAD2;
+  --serif:"Literata",Georgia,"Times New Roman",serif;
+  --sans:"Figtree",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#11181B;--surface:#1B2428;--ink:#E7EDEA;--muted:#93A3A6;
+    --green:#4FAE7A;--green-soft:#1F3A2C;--red:#E5485F;--red-soft:#3A1E24;
+    --gold:#F2C230;--line:#2A363A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11181B;--surface:#1B2428;--ink:#E7EDEA;--muted:#93A3A6;
+  --green:#4FAE7A;--green-soft:#1F3A2C;--red:#E5485F;--red-soft:#3A1E24;
+  --gold:#F2C230;--line:#2A363A;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.app{max-width:560px;margin:0 auto;padding:20px 18px 110px}
+h1{font-family:var(--serif);font-weight:700;font-size:2.1rem;line-height:1.1;margin:8px 0 4px}
+h2{font-family:var(--serif);font-weight:700;font-size:1.35rem;margin:28px 0 10px}
+p{margin:0 0 10px}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+
+/* Home */
+.week{display:flex;gap:6px;margin:18px 0 6px}
+.day{flex:1;text-align:center;font-size:.78rem;color:var(--muted)}
+.day i{display:block;height:34px;border-radius:10px;border:2px solid var(--line);margin-bottom:4px}
+.day.done i{background:var(--green);border-color:var(--green)}
+.day.today i{border-color:var(--ink)}
+.day.today.done i{border-color:var(--green)}
+.streak{font-weight:600;margin:6px 0 20px}
+.streak b{color:var(--red)}
+.primary{display:block;width:100%;border:0;border-radius:16px;padding:18px;background:var(--green);color:#fff;font-weight:700;font-size:1.1rem}
+.primary:active{transform:scale(.99)}
+.status{margin:10px 2px 0;font-size:.95rem}
+.status.todo{color:var(--red);font-weight:600}
+.status.ok{color:var(--green);font-weight:600}
+.stats{display:flex;gap:10px;margin-top:22px}
+.stat{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.stat strong{display:block;font-size:1.4rem;font-family:var(--serif)}
+.stat span{font-size:.85rem;color:var(--muted)}
+.challenge{margin-top:22px;background:var(--surface);border-left:5px solid var(--red);border-radius:6px 14px 14px 6px;padding:16px}
+.challenge h3{margin:0 0 6px;font-size:1rem}
+.challenge p{font-family:var(--serif);font-size:1.15rem;margin:0 0 8px}
+
+/* Session */
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.close{border:0;background:none;font-size:1.6rem;line-height:1;padding:4px 8px;color:var(--muted)}
+.bar{flex:1;height:10px;background:var(--line);border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--green);transition:width .3s}
+.tag{display:inline-block;font-size:.85rem;font-weight:600;padding:4px 10px;border-radius:20px;background:var(--green-soft);color:var(--green);margin-bottom:14px}
+.tag.new{background:var(--red-soft);color:var(--red)}
+.en{font-size:1.3rem;font-weight:600;margin:0 0 18px}
+.cy{font-family:var(--serif);font-weight:700;font-size:2.2rem;line-height:1.15;margin:0 0 12px;overflow-wrap:anywhere}
+.note{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:.95rem;color:var(--muted);margin:0 0 18px}
+.hint{color:var(--muted);margin:14px 0}
+.row{display:flex;gap:10px;margin-top:10px}
+.row button{flex:1}
+.btn{border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:14px 10px;font-weight:600}
+.btn.miss{border-color:var(--red);color:var(--red)}
+.btn.near{border-color:var(--gold)}
+.btn.good{background:var(--green);border-color:var(--green);color:#fff}
+.listen{border:0;background:var(--green-soft);color:var(--green);border-radius:20px;padding:8px 14px;font-weight:600;font-size:.95rem;margin-bottom:16px}
+.answer{min-height:64px;border-bottom:2px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;padding:8px 0 12px;margin-bottom:18px}
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:50px}
+.tile{font-family:var(--serif);font-size:1.25rem;font-weight:500;padding:8px 14px;border-radius:12px;border:2px solid var(--line);border-bottom-width:4px;background:var(--surface)}
+.tile.used{visibility:hidden}
+.feedback{border-radius:14px;padding:14px 16px;margin:16px 0 4px;font-weight:600}
+.feedback.right{background:var(--green-soft);color:var(--green)}
+.feedback.wrong{background:var(--red-soft);color:var(--red)}
+.feedback span{display:block;font-family:var(--serif);font-size:1.3rem;color:var(--ink);margin-top:4px}
+.finish{text-align:center;padding-top:40px}
+.finish .dragon{font-size:4rem}
+
+/* Patterns & phrases */
+details{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-bottom:10px}
+summary{padding:14px 16px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:10px}
+summary::-webkit-details-marker{display:none}
+summary small{font-weight:400;color:var(--muted);white-space:nowrap}
+details .inner{padding:0 16px 14px}
+.ex{border-top:1px solid var(--line);padding:10px 0}
+.ex .w{font-family:var(--serif);font-weight:700;font-size:1.15rem}
+.ex .e{color:var(--muted);font-size:.95rem}
+.ex .n{font-size:.85rem;color:var(--muted);font-style:italic;margin-top:2px}
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600}
+td.s{font-family:var(--serif);font-weight:700;color:var(--green)}
+tr:last-child td{border-bottom:0}
+.sound{display:grid;grid-template-columns:72px 1fr;gap:6px 12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.sound b{font-family:var(--serif);font-size:1.15rem}
+.search{width:100%;font:inherit;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink);margin-bottom:14px}
+.link{border:0;background:none;color:var(--red);text-decoration:underline;padding:0;font-size:.9rem;margin-top:24px}
+
+/* Nav */
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+nav .in{max-width:560px;margin:0 auto;display:flex}
+nav button{flex:1;border:0;background:none;padding:12px 4px 10px;font-size:.82rem;color:var(--muted);font-weight:600}
+nav button b{display:block;font-family:var(--serif);font-size:1.05rem;color:var(--muted)}
+nav button.on b,nav button.on{color:var(--green)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<nav id="nav"><div class="in">
+  <button data-tab="home" class="on"><b>Heddi</b>Today</button>
+  <button data-tab="patterns"><b>Patrymau</b>Patterns</button>
+  <button data-tab="phrases"><b>Ymadroddion</b>Phrases</button>
+</div></nav>
+
+<script>
+/* ---------- Content (South Walian) ---------- */
+const UNITS = [
+ {id:"u0", title:"Greetings & basics", lead:"The everyday bits you'll use and hear constantly round Bridgend.", cards:[
+  ["Hello / alright?","Shwmae","The classic South Wales greeting. Shw mae'i? is also common."],
+  ["Good morning","Bore da",""],
+  ["Good night","Nos da",""],
+  ["Thank you very much","Diolch yn fawr",""],
+  ["Well done","Da iawn",""],
+  ["Cheers!","Iechyd da!",""],
+  ["It's raining","Mae'n bwrw glaw","Literally \"it's hitting rain\"."],
+  ["It's cold today","Mae'n oer heddi","heddi is how the South says heddiw (today)."],
+  ["It's lovely weather","Mae'n braf",""],
+  ["See you tomorrow","Wela i ti fory","fory is the everyday form of yfory."]
+ ]},
+ {id:"u1", title:"Dw i'n – I am / I do", lead:"Start almost any sentence about yourself with Dw i'n, then add a verb. For \"I'm not / I don't\" use Dw i ddim yn. In South Wales speech you'll also hear Sa i'n for \"I'm not\".", cards:[
+  ["I'm working","Dw i'n gweithio",""],
+  ["I'm learning Welsh","Dw i'n dysgu Cymraeg",""],
+  ["I live in Bridgend","Dw i'n byw ym Mhen-y-bont","After yn (in), Pen-y-bont changes to Mhen-y-bont."],
+  ["I like coffee","Dw i'n hoffi coffi","In the South you'll hear Dw i'n lico coffi too."],
+  ["I'm watching the rugby","Dw i'n gwylio'r rygbi",""],
+  ["I'm going home now","Dw i'n mynd adre nawr","nawr = now. North Wales says rŵan."],
+  ["I don't understand","Dw i ddim yn deall",""],
+  ["I don't know","Dw i ddim yn gwybod","South speech: Sa i'n gwbod."],
+  ["I'm not working today","Dw i ddim yn gweithio heddi",""],
+  ["I'm tired","Dw i wedi blino","Uses wedi instead of 'n – literally \"I have tired\"."]
+ ]},
+ {id:"u2", title:"Questions – Wyt ti'n…?", lead:"Turn Dw i'n into a question with Wyt ti'n…? (are you / do you). Use Ydych chi'n…? with strangers, customers and older people. There's no single word for yes or no – you answer with the verb: Ydw (yes, I am) or Nac ydw (no, I'm not).", cards:[
+  ["Are you OK?","Wyt ti'n iawn?","Often shortened to Ti'n iawn?"],
+  ["Yes, I am","Ydw",""],
+  ["No, I'm not","Nac ydw","Often sounds like Na'dw in the South."],
+  ["How are you?","Shwd wyt ti?","Very South Walian. North Wales says Sut wyt ti?"],
+  ["Do you speak Welsh?","Wyt ti'n siarad Cymraeg?",""],
+  ["Do you speak Welsh? (polite)","Ydych chi'n siarad Cymraeg?","chi is the polite or plural you."],
+  ["Where do you live?","Ble wyt ti'n byw?",""],
+  ["Do you want a cuppa?","Wyt ti'n moyn dishgled?","dishgled is proper South Walian for a cup of tea. Paned works too."],
+  ["What's your name?","Beth yw dy enw di?",""],
+  ["My name is Matthew","Matthew dw i","Literally \"Matthew I am\"."]
+ ]},
+ {id:"u3", title:"Asking for things – Ga i…?", lead:"Ga i…? means \"Can I have…?\". The word after it softens (mutates): coffi becomes goffi, peint becomes beint. Dw i'n moyn means \"I want\" – moyn is the South Wales word (North says isio).", cards:[
+  ["I want a coffee","Dw i'n moyn coffi","In speech the 'n often drops: Dw i moyn coffi."],
+  ["Can I have a coffee?","Ga i goffi?","coffi softens to goffi after Ga i."],
+  ["Can I have a pint, please?","Ga i beint, plîs?","peint softens to beint."],
+  ["Two coffees, please","Dau goffi, plîs","dau (two) softens the next word too."],
+  ["Can I have the bill?","Ga i'r bil?",""],
+  ["How much is it?","Faint yw e?","South uses yw and e. North says Faint ydi o?"],
+  ["Where's the toilet?","Ble mae'r tŷ bach?","Literally \"the little house\"."],
+  ["Can you help me?","Allwch chi helpu fi?",""],
+  ["Slower, please","Arafach, plîs","Handy when someone speaks too fast."]
+ ]},
+ {id:"u4", title:"Having – Mae … 'da fi", lead:"Welsh says \"a car is with me\" instead of \"I have a car\". The South uses 'da fi (with me). North Wales says Mae gen i instead. Questions use Oes…? and you answer Oes (yes) or Nac oes (no).", cards:[
+  ["I've got a car","Mae car 'da fi","North: Mae gen i gar."],
+  ["I've got two kids","Mae dau o blant 'da fi",""],
+  ["Have you got time?","Oes amser 'da ti?",""],
+  ["Yes (there is)","Oes",""],
+  ["No (there isn't)","Nac oes",""],
+  ["I haven't got any money","Does dim arian 'da fi","South speech: Sdim arian 'da fi."],
+  ["She's got a dog","Mae ci 'da hi",""],
+  ["We've got a meeting tomorrow","Mae cyfarfod 'da ni fory",""]
+ ]},
+ {id:"u5", title:"What I did – the past", lead:"Spoken South Walian past tense ends in -es i: Weles i (I saw), Prynes i (I bought). A few common ones are irregular: Es i (I went), Ces i (I had), Nes i (I did).", cards:[
+  ["I went to work","Es i i'r gwaith",""],
+  ["I had a good day","Ces i ddiwrnod da","diwrnod softens to ddiwrnod after Ces i."],
+  ["I saw the match","Weles i'r gêm","South form. Textbooks write Gwelais i."],
+  ["I did it","Nes i fe","The South uses fe for it/him. North uses fo."],
+  ["What did you do?","Beth nest ti?",""],
+  ["I watched the rugby yesterday","Gwylies i'r rygbi ddoe",""],
+  ["I went to the pub","Es i i'r dafarn",""],
+  ["I bought a coffee","Prynes i goffi",""]
+ ]},
+ {id:"u6", title:"What I'll do – the future", lead:"Bydda i'n + verb = I will be doing. Negative: Fydda i ddim yn. Ask with Fyddi di…?", cards:[
+  ["I'll be working tomorrow","Bydda i'n gweithio fory",""],
+  ["I'll see you later","Wela i ti wedyn","South says ti here. North says di."],
+  ["Will you be there?","Fyddi di 'na?",""],
+  ["I won't be late","Fydda i ddim yn hwyr",""],
+  ["I'll phone you","Ffonia i ti",""],
+  ["Have a good weekend","Penwythnos da",""]
+ ]}
+];
+const CARDS = [];
+UNITS.forEach(u => u.cards.forEach((c,i) => CARDS.push({id:u.id+"-"+i, unit:u.id, en:c[0], cy:c[1], note:c[2]})));
+const BYID = Object.fromEntries(CARDS.map(c=>[c.id,c]));
+
+const SOUTH_NORTH = [
+ ["now","nawr","rŵan"],["want","moyn","isio"],["I've got","Mae … 'da fi","Mae gen i"],
+ ["it / him","fe","fo"],["how","shwd","sut"],["today","heddi","heddiw"],
+ ["milk","llaeth","llefrith"],["out","mas","allan"],["up","lan","fyny"],
+ ["say","gweud","deud"],["can / able","gallu","medru"],["home(wards)","adre","adra"],
+ ["cuppa","dishgled","paned"],["boy","crwt","hogyn"],["girl","croten","hogan"]
+];
+const SOUNDS = [
+ ["dd","the th in \"this\""],["th","the th in \"thin\""],["f","v"],["ff","f"],
+ ["ll","put your tongue where you'd say L and blow"],["ch","as in Scottish \"loch\""],
+ ["w","oo, as in \"cwtch\""],["u","ee in the South"],["y","uh in most words, i at the end"],
+ ["ae / ai / au","eye"],["si","sh – siarad sounds like sharad"],["rh","a breathy r"]
+];
+const CHALLENGES = [
+ "Introduce yourself: your name, where you live and where you work.",
+ "Tell someone three things you're doing today, using Dw i'n…",
+ "Order two coffees and ask how much it is.",
+ "Say what you did yesterday, using Es i… and Ces i…",
+ "Say what you've got, using Mae … 'da fi.",
+ "Describe the weather outside right now.",
+ "Say what you'll be doing this weekend, using Bydda i'n…",
+ "Ask someone three questions using Wyt ti'n…?",
+ "Say three things you don't do, using Dw i ddim yn…"
+];
+
+/* ---------- Storage ---------- */
+const KEY = "siarad-v1";
+const INT = [0,1,2,4,8,16];
+const def = () => ({cards:{}, streak:0, lastDone:null, days:[]});
+let S = (() => { try { const r = localStorage.getItem(KEY); if (r) return Object.assign(def(), JSON.parse(r)); } catch(e){} return def(); })();
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} };
+
+const pad = n => String(n).padStart(2,"0");
+const fmt = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const today = () => fmt(new Date());
+const addDays = (s,n) => { const [y,m,d] = s.split("-").map(Number); return fmt(new Date(y,m-1,d+n)); };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const tokens = s => s.replace(/[?!.,]/g,"").split(/\s+/).filter(Boolean);
+
+/* ---------- Welsh voice (if the device has one) ---------- */
+let cyVoice = null;
+function findVoice(){
+  if (!("speechSynthesis" in window)) return;
+  const v = speechSynthesis.getVoices();
+  cyVoice = v.find(x => x.lang && x.lang.toLowerCase().startsWith("cy")) || null;
+}
+if ("speechSynthesis" in window){ findVoice(); speechSynthesis.onvoiceschanged = () => { findVoice(); }; }
+function speak(t){
+  if (!cyVoice) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(t); u.voice = cyVoice; u.lang = cyVoice.lang; u.rate = .85;
+  speechSynthesis.speak(u);
+}
+const listenBtn = t => cyVoice ? `<button class="listen" data-say="${esc(t)}">▶ Listen</button>` : "";
+
+/* ---------- App ---------- */
+const app = document.getElementById("app");
+const nav = document.getElementById("nav");
+let tab = "home", sess = null;
+
+nav.addEventListener("click", e => {
+  const b = e.target.closest("button[data-tab]"); if (!b) return;
+  tab = b.dataset.tab;
+  nav.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+  render(); window.scrollTo(0,0);
+});
+app.addEventListener("click", e => {
+  const s = e.target.closest("[data-say]"); if (s) speak(s.dataset.say);
+});
+
+function streakNow(){
+  const t = today();
+  return (S.lastDone === t || S.lastDone === addDays(t,-1)) ? S.streak : 0;
+}
+function dueCount(){
+  const t = today();
+  return CARDS.filter(c => S.cards[c.id] && S.cards[c.id].due <= t).length;
+}
+
+function render(){
+  nav.style.display = sess ? "none" : "";
+  if (sess) return renderSession();
+  if (tab === "home") renderHome();
+  else if (tab === "patterns") renderPatterns();
+  else renderPhrases();
+}
+
+function renderHome(){
+  const t = today(), names = ["Sul","Llun","Maw","Mer","Iau","Gwe","Sad"];
+  let week = "";
+  for (let i=6;i>=0;i--){
+    const d = addDays(t,-i), [y,m,dd] = d.split("-").map(Number);
+    const done = S.days.includes(d);
+    week += `<div class="day ${done?"done":""} ${i===0?"today":""}"><i></i>${names[new Date(y,m-1,dd).getDay()]}</div>`;
+  }
+  const done = S.lastDone === t, st = streakNow();
+  const learned = CARDS.filter(c => S.cards[c.id]).length;
+  const start = new Date(new Date().getFullYear(),0,0);
+  const ch = CHALLENGES[Math.floor((new Date()-start)/864e5) % CHALLENGES.length];
+  app.innerHTML = `
+    <h1>Shwmae, Matthew</h1>
+    <p class="muted">Ten minutes of speaking a day. Say every answer out loud.</p>
+    <div class="week">${week}</div>
+    <p class="streak">${st ? `<b>${st}</b> day streak` : "Start a streak today"}</p>
+    <button class="primary" id="go">${done ? "Practise again" : "Start today's practice"}</button>
+    <p class="status ${done?"ok":"todo"}">${done ? "Done for today – da iawn!" : "Not done yet today"}</p>
+    <div class="stats">
+      <div class="stat"><strong>${learned}/${CARDS.length}</strong><span>phrases started</span></div>
+      <div class="stat"><strong>${dueCount()}</strong><span>due for review</span></div>
+    </div>
+    <div class="challenge">
+      <h3>Today's speaking challenge</h3>
+      <p>${esc(ch)}</p>
+      <span class="small muted">Say it out loud, or message it to Claude for corrections.</span>
+    </div>`;
+  document.getElementById("go").onclick = startSession;
+}
+
+function startSession(){
+  const t = today();
+  const seen = CARDS.filter(c => S.cards[c.id]);
+  const due = seen.filter(c => S.cards[c.id].due <= t).sort((a,b) => S.cards[a.id].due < S.cards[b.id].due ? -1 : 1).slice(0,12);
+  const fresh = CARDS.filter(c => !S.cards[c.id]).slice(0,5);
+  const modeFor = c => {
+    const box = (S.cards[c.id]||{}).box || 0;
+    if (tokens(c.cy).length < 3) return "recall";
+    return (box < 2 || Math.random() < .5) ? "build" : "recall";
+  };
+  let q = [];
+  fresh.forEach(c => q.push({id:c.id, mode:"learn"}));
+  shuffle(due).forEach(c => q.push({id:c.id, mode:modeFor(c)}));
+  shuffle(fresh).forEach(c => q.push({id:c.id, mode: tokens(c.cy).length < 3 ? "recall" : "build"}));
+  let extra = false;
+  if (!q.length){ extra = true; q = shuffle(seen).slice(0,8).map(c => ({id:c.id, mode:modeFor(c)})); }
+  sess = {q, done:0, newIds:new Set(fresh.map(c=>c.id)), extra, finished:false};
+  render(); window.scrollTo(0,0);
+}
+
+function grade(id, res, item){
+  const c = S.cards[id] || {box:0, due:today()};
+  if (res === "good") c.box = sess.newIds.has(id) ? 1 : Math.min(5, c.box+1);
+  else if (res === "near") c.box = Math.max(1, c.box);
+  else c.box = 1;
+  c.due = addDays(today(), res === "miss" ? 1 : INT[c.box]);
+  S.cards[id] = c; save();
+  if (res === "miss" && !item.retry) sess.q.push({id, mode:"recall", retry:true});
+  next();
+}
+function next(){
+  sess.q.shift(); sess.done++;
+  if (!sess.q.length) finish();
+  render(); window.scrollTo(0,0);
+}
+function finish(){
+  const t = today();
+  if (S.lastDone !== t){
+    S.streak = (S.lastDone === addDays(t,-1)) ? S.streak + 1 : 1;
+    S.lastDone = t;
+    S.days.push(t); S.days = S.days.slice(-60);
+    save();
+  }
+  sess.finished = true;
+}
+
+function renderSession(){
+  if (sess.finished){
+    app.innerHTML = `<div class="finish">
+      <div class="dragon">🐉</div>
+      <h1>Diolch, Matthew!</h1>
+      <p class="muted">${S.streak} day streak. Tick off today's reminder so it stops nagging you.</p>
+      <p style="margin-top:22px">Bonus: try today's speaking challenge on the home screen.</p>
+      <button class="primary" id="home" style="margin-top:20px">Back to today</button></div>`;
+    document.getElementById("home").onclick = () => { sess = null; tab = "home"; render(); };
+    return;
+  }
+  const item = sess.q[0], c = BYID[item.id];
+  const pct = Math.round(sess.done / (sess.done + sess.q.length) * 100);
+  const top = `<div class="topbar"><button class="close" id="quit" aria-label="Stop practice">×</button><div class="bar"><i style="width:${pct}%"></i></div></div>`;
+  const note = c.note ? `<div class="note">${esc(c.note)}</div>` : "";
+
+  if (item.mode === "learn"){
+    app.innerHTML = top + `<span class="tag new">New phrase</span>
+      <p class="en">${esc(c.en)}</p>
+      <p class="cy">${esc(c.cy)}</p>${listenBtn(c.cy)}${note}
+      <p class="hint">Say it out loud three times, then carry on.</p>
+      <button class="primary" id="ok">I've said it</button>`;
+    document.getElementById("ok").onclick = () => {
+      if (!S.cards[c.id]) { S.cards[c.id] = {box:0, due:today()}; save(); }
+      next();
+    };
+  }
+  else if (item.mode === "recall"){
+    app.innerHTML = top + `<span class="tag">Say it in Welsh</span>
+      <p class="en">${esc(c.en)}</p>
+      <div id="rev"><p class="hint">Say your answer out loud first, then check.</p>
+      <button class="primary" id="show">Show answer</button></div>`;
+    document.getElementById("show").onclick = () => {
+      document.getElementById("rev").innerHTML = `<p class="cy">${esc(c.cy)}</p>${listenBtn(c.cy)}${note}
+        <p class="hint">How did you do?</p>
+        <div class="row"><button class="btn miss" data-g="miss">Missed it</button><button class="btn near" data-g="near">Nearly</button><button class="btn good" data-g="good">Got it</button></div>`;
+      document.querySelectorAll("[data-g]").forEach(b => b.onclick = () => grade(c.id, b.dataset.g, item));
+    };
+  }
+  else {
+    const target = tokens(c.cy);
+    const pool = shuffle(target.map((w,i) => ({w,i})));
+    let picked = [];
+    app.innerHTML = top + `<span class="tag">Build it in Welsh</span>
+      <p class="en">${esc(c.en)}</p>
+      <div class="answer" id="ans"></div>
+      <div class="pool" id="pool"></div>
+      <div id="fb"></div>
+      <div class="row" id="ctrl"><button class="btn" id="clr">Clear</button><button class="btn good" id="chk">Check</button></div>`;
+    const ans = document.getElementById("ans"), pl = document.getElementById("pool");
+    const draw = () => {
+      ans.innerHTML = picked.map((p,k) => `<button class="tile" data-k="${k}">${esc(p.w)}</button>`).join("");
+      pl.innerHTML = pool.map((p,k) => `<button class="tile ${picked.includes(p)?"used":""}" data-p="${k}">${esc(p.w)}</button>`).join("");
+      ans.querySelectorAll("[data-k]").forEach(b => b.onclick = () => { picked.splice(+b.dataset.k,1); draw(); });
+      pl.querySelectorAll("[data-p]").forEach(b => b.onclick = () => { const p = pool[+b.dataset.p]; if (!picked.includes(p)) { picked.push(p); draw(); } });
+    };
+    draw();
+    document.getElementById("clr").onclick = () => { picked = []; draw(); };
+    document.getElementById("chk").onclick = () => {
+      if (picked.length < target.length) return;
+      const right = picked.map(p=>p.w).join(" ") === target.join(" ");
+      ans.querySelectorAll("button").forEach(b => b.disabled = true);
+      pl.innerHTML = "";
+      document.getElementById("fb").innerHTML = (right
+        ? `<div class="feedback right">Cywir! Now say it out loud.<span>${esc(c.cy)}</span></div>`
+        : `<div class="feedback wrong">Not quite. It's:<span>${esc(c.cy)}</span></div>`) + listenBtn(c.cy) + note;
+      document.getElementById("ctrl").innerHTML = `<button class="primary" id="nx">Continue</button>`;
+      document.getElementById("nx").onclick = () => grade(c.id, right ? "good" : "miss", item);
+    };
+  }
+  document.getElementById("quit").onclick = () => {
+    if (confirm("Stop now? Today won't count until you finish a session.")) { sess = null; render(); }
+  };
+}
+
+function renderPatterns(){
+  app.innerHTML = `<h1>Patrymau</h1>
+    <p class="muted">The sentence patterns that do most of the work. Learn the pattern, then swap in words you already know.</p>
+    ${UNITS.map(u => `<details><summary>${esc(u.title)}<small>${u.cards.filter((c,i)=>S.cards[u.id+"-"+i]).length}/${u.cards.length}</small></summary>
+      <div class="inner"><p>${esc(u.lead)}</p>
+      ${u.cards.slice(0,4).map(c => `<div class="ex"><div class="w">${esc(c[1])}</div><div class="e">${esc(c[0])}</div></div>`).join("")}
+      </div></details>`).join("")}
+    <h2>South vs North</h2>
+    <p class="muted small">You're learning the left-hand column. You'll hear the right one on S4C and from North Walians.</p>
+    <div class="tablewrap"><table><thead><tr><th>English</th><th>South</th><th>North</th></tr></thead><tbody>
+      ${SOUTH_NORTH.map(r => `<tr><td>${esc(r[0])}</td><td class="s">${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join("")}
+    </tbody></table></div>
+    <h2>How the letters sound</h2>
+    <div class="sound">${SOUNDS.map(s => `<b>${esc(s[0])}</b><span>${esc(s[1])}</span>`).join("")}</div>`;
+}
+
+function renderPhrases(){
+  app.innerHTML = `<h1>Ymadroddion</h1>
+    <input class="search" id="q" type="search" placeholder="Search English or Welsh" aria-label="Search phrases">
+    <div id="list"></div>
+    <button class="link" id="reset">Reset all progress</button>`;
+  const list = document.getElementById("list"), q = document.getElementById("q");
+  const draw = () => {
+    const f = q.value.trim().toLowerCase();
+    list.innerHTML = UNITS.map(u => {
+      const rows = u.cards.filter(c => !f || c[0].toLowerCase().includes(f) || c[1].toLowerCase().includes(f));
+      if (!rows.length) return "";
+      return `<h2>${esc(u.title)}</h2>` + rows.map(c => `<div class="ex" ${cyVoice?`data-say="${esc(c[1])}"`:""}>
+        <div class="w">${esc(c[1])}${cyVoice?" ▶":""}</div><div class="e">${esc(c[0])}</div>${c[2]?`<div class="n">${esc(c[2])}</div>`:""}</div>`).join("");
+    }).join("") || `<p class="muted">No phrases match "${esc(q.value)}". Try a shorter word.</p>`;
+  };
+  q.oninput = draw; draw();
+  document.getElementById("reset").onclick = () => {
+    if (confirm("Reset your streak and all progress?")) { S = def(); save(); tab = "home"; nav.querySelector('[data-tab="home"]').click(); }
+  };
+}
+
+render();
+</script>
+</body>
+</html>
